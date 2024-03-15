@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: products-server
+          uri: http://products-server:8080
+          predicates:
+            - Path=/products/**
+          filters:
+            - RewritePath=/products/, /
+        - id: payment-server
+          uri: http://payment-server:8080
+          predicates:
+              - Path=/payment/**
+          filters:
+            - RewritePath=/payment/, / 

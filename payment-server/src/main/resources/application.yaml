@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: payment-server
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    
+
+#eureka:
+ # client:
+  #  fetch-registry: true
+   # register-with-eureka: true
+    #service-url:
+     # defaultZone: ${SERVICE_DISCOVERY_ADDRESS}

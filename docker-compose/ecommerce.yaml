@@ -1,0 +1,69 @@
+version: '3'
+services:
+  products-db:
+    env_file:
+      - ./.env
+    image: "mysql/mysql-server:8.0.31"
+    ports:
+      - "3306"
+    networks:
+      - "ecommerce-network"
+    environment:
+      - MYSQL_USER: '${DB_USER}'
+      - MYSQL_PASSWORD: '${DB_PASSWORD}'
+      - MYSQL_DATABASE: '${DB_DATABASE}'
+
+  products-server:
+    env_file:
+      - ./.env
+    image: "openjdk:21"
+    restart: always
+    ports:
+      - "8080"
+    volumes:
+      - "${PRODUCTS_SERVER_VOLUME}"
+    environment:
+      DB_URL: '${DB_URL}'
+      DB_USER: '${DB_USER}'
+      DB_PASSWORD: '${DB_PASSWORD}'
+    entrypoint: java -jar /usr/src/myapp/products-server-0.0.1-SNAPSHOT.jar
+    networks:
+      - "ecommerce-network" 
+    depends_on:
+      - products-db
+
+  payment-server:
+    env_file:
+      - ./.env
+    image: "openjdk:21"
+    restart: always
+    ports:
+      - "8080"
+    volumes:
+      - "${PAYMENT_SERVER_VOLUME}"
+    environment:
+      DB_URL: '${DB_URL}'
+      DB_USER: '${DB_USER}'
+      DB_PASSWORD: '${DB_PASSWORD}'
+    entrypoint: java -jar /usr/src/myapp/payment-server-0.0.1-SNAPSHOT.jar
+    networks:
+      - "ecommerce-network"
+    depends_on: 
+      - products-db
+
+  gateway-server:
+    image: "openjdk:21"
+    volumes:
+      - "${GATEWAY_SERVER_VOLUME}"
+    entrypoint: java -jar /application/gateway-server-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8080:8080"
+    networks:
+      - "ecommerce-network"
+    depends_on:
+      - products-server
+      - payment-server
+
+networks:
+  ecommerce-network:
+    driver: bridge
