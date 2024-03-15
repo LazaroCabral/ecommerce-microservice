@@ -16,8 +16,8 @@ public record ProductRecord(Long id, String name, String color, String descripti
 	public static List<ProductRecord> toRecordList(Stream<Product> stream) {
 		List<ProductRecord> productsRecords= new ArrayList<>();
 		stream.forEach(product -> {
-			new ProductRecord(product.getId(), product.getName(),
-					product.getColor(), product.getDescription());
+			productsRecords.add(new ProductRecord(product.getId(), product.getName(),
+					product.getColor(), product.getDescription()));
 		});
 		return productsRecords;
 	}
